@@ -21,7 +21,6 @@
     "dist": true,
     "test/jest-e2e.json": true,
     "output": true,
-    "test/tsconfig.json": true,
   },
   "editor.insertSpaces": true,
   "editor.tabSize": 2,

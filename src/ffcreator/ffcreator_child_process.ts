@@ -34,7 +34,7 @@ async function main() {
     await timer(1).toPromise();
   }
 
-  process.exit();
+  process.exit()
 }
 
 export default main();

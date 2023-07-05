@@ -1,155 +1,154 @@
 import path from 'path';
-import { FFCreator, FFImage, FFScene } from 'ffcreator';
+import {    FFGifImage,
+            FFText,
+            FFTween,
+            FFScene,
+            FFImage,
+            FFAudio,
+            FFCreator} from 'ffcreator';
 import ImageSize from 'image-size';
+import colors  from 'colors';
 
 export async function generateVideo(config: {
   cacheDir: string;
   outputVideoFilePath: string;
 }) {
-  // pre-defined variables
-  const audioOneFilePathOfAreYouOk = path.join(
-    __dirname,
-    'audio',
-    'Are You OK.mp3',
-  );
-  const paddyOne = path.join(__dirname, 'image', 'paddyOne.png');
-  const paddyTwo = path.join(__dirname, 'image', 'paddyTwo.jpg');
-  const paddyThree = path.join(__dirname, 'image', 'paddyThree.png');
-  const paddyFour = path.join(__dirname, 'image', 'paddyFour.png');
-  const girlImage = path.join(__dirname, "image", "girl.jpg");
-  const width = 800;
-  const height = 550;
-  // Basic configuration of video
-  const ffcreator = new FFCreator({
-    cacheDir: config.cacheDir,
-    output: config.outputVideoFilePath,
-    width: width,
-    height: height,
-    cover: girlImage,
-    audioLoop: false,
-    fps: 120,
-    debug: false,
-    defaultOutputOptions: {
-      merge: true,
-      options: ['-pix_fmt yuv420p'],
-    },
-    log: true,
-    antialias: true,
-    clarity: "high",
-    preset: "veryslow",
-  });
-  {
-    // Background music
-    ffcreator.addAudio({
-      path: audioOneFilePathOfAreYouOk,
-      start: 0,
-      volume: 1,
-      bg: true,
-      loop: true,
-    });
-  }
-  {
-    // Scene 1, black background
-    const ffscene = new FFScene();
-    ffscene.setBgColor('#000000');
-    ffscene.setDuration(3);
-    ffscene.setTransition('Colorful', 3);
-    ffscene.addChild(
-      await imageOnCenter({
-        width,
-        height,
-        imagePath: girlImage,
-      }),
-    );
-    ffcreator.addChild(ffscene);
-  }
-  {
-    // Scene 2, the first picture
-    const ffscene = new FFScene();
-    ffscene.setBgColor('#000000');
-    ffscene.setDuration(5);
-    ffscene.setTransition('MoveLeft', 1);
-    ffscene.addChild(
-      await imageOnCenter({
-        width,
-        height,
-        imagePath: paddyOne,
-      }),
-    );
-    ffcreator.addChild(ffscene);
-  }
-  {
-    // Scene 3, the second picture
-    const ffscene = new FFScene();
-
-    ffscene.setBgColor('#000000');
-    ffscene.setDuration(6);
-    ffscene.setTransition('InvertedPageCurl', 3);
-    const ffimage = await imageOnCenter({
+    const bg1 = path.join(__dirname, 'image', 'h01.jpg');
+    const bg2 = path.join(__dirname, 'image', 'h04.jpg');
+    const logo2 = path.join(__dirname, 'image', 'logo2.png');
+    const cover = path.join(__dirname, 'image', 'cover2.jpg');
+    const dragon = path.join(__dirname, 'image', 'dragon.png');
+    const mario = path.join(__dirname, 'image', 'mario.png');
+    const elephant = path.join(__dirname, 'image', 'elephant.png');
+    const money = path.join(__dirname, 'image', 'm.gif');
+    const audio = path.join(__dirname, 'image', '02.wav');
+    const outputDir =  config.outputVideoFilePath;
+    const cacheDir =  config.cacheDir;
+  
+    // create creator instance
+    const width = 800;
+    const height = 600;
+    const creator = new FFCreator({
+      cover,
+      cacheDir,
+      output: outputDir,
       width,
       height,
-      imagePath: paddyTwo,
+      parallel: 8,
+      log: true,
     });
-
-    ffimage.addEffect('fadeIn', 0, 0);
-    ffimage.addAnimate({
-      from: { scale: 1, alpha: 1 },
-      to: {
-        x: Math.floor(width / 2),
-        y: Math.floor(height / 2),
-        scale: 0.1,
+  
+    creator.addAudio(new FFAudio({ path: audio, volume: 0.9, fadeIn: 4, fadeOut: 4, loop: true }));
+    // create FFScene
+    const scene1 = new FFScene();
+    const scene2 = new FFScene();
+  
+    // add scene1 background
+    const fbg1 = new FFImage({ path: bg1, x: width / 2, y: height / 2 });
+    fbg1.addEffect({ type: 'zoomingIn', time: 9 });
+    scene1.addChild(fbg1);
+  
+    // add fmoney image
+    const fmoney = new FFGifImage({ path: money, x: 100, y: 200 });
+    fmoney.addEffect({
+      type: 'fadeInLeft',
+      time: 1,
+      delay: 3,
+    });
+    fmoney.setScale(0.3);
+    scene1.addChild(fmoney);
+  
+    // add FFText Component
+    const text = new FFText({ text: '各类动画的DEMO', x: width / 2, y: 130, fontSize: 40 });
+    text.setColor('#ffffff');
+    text.setBackgroundColor('#bc05a9');
+    // 多个动画效果组合
+    text.addEffect(['fadeInUp', 'rotateIn', 'blurIn', 'zoomIn'], 1, 0.5);
+    text.alignCenter();
+    text.setStyle({ padding: 10 });
+    scene1.addChild(text);
+  
+    // use FFTween
+    const fdragon = new FFImage({ path: dragon, x: 500, y: 700, alpha: 0 });
+    fdragon.setAnchor(0.5, 1);
+    scene1.addChild(fdragon);
+    FFTween.fromTo(
+      fdragon,
+      1,
+      {
         alpha: 0,
-      },
-      time: 1.5,
-      delay: 1,
-      ease: 'Quadratic.In',
-    });
-    ffimage.addAnimate({
-      from: {
-        x: Math.floor(width / 2),
-        y: Math.floor(height / 2),
         scale: 0.1,
-        alpha: 0,
       },
-      to: { scale: 1, alpha: 1 },
-      time: 1.5,
-      delay: 2.5,
-      ease: 'Quadratic.In',
+      {
+        scale: 1,
+        alpha: 1,
+        delay: 2,
+        y: 550,
+        ease: 'Back.Out',
+      },
+    );
+  
+    const fdragon2 = new FFImage({ path: dragon, x: 700, y: 300, width: 320 / 2, height: 402 / 2 });
+    fdragon2.addBlend('ADD');
+    fdragon2.addEffect('bounceIn', 1, 1);
+    scene1.addChild(fdragon2);
+  
+    const fmario = new FFImage({ path: mario, x: 500, y: 400, alpha: 0 });
+    scene1.addChild(fmario);
+    fmario.addAnimate({
+      from: { x: -100, scale: 0.1, alpha: 0, rotate: 3.14 / 2 },
+      to: { x: 160, scale: 0.6, alpha: 1, rotate: 0 },
+      time: 1,
+      delay: 4.3,
+      ease: 'Back.Out',
     });
-    ffscene.addChild(ffimage);
-    ffcreator.addChild(ffscene);
-  }
-  {
-    // Scene 4, the third picture
-    const ffscene = new FFScene();
+  
+    const felephant = new FFImage({ path: elephant, x: 350, y: 300, alpha: 0 });
+    scene1.addChild(felephant);
+    felephant.addEffect(['fadeInUp', 'blurIn', 'zoomIn'], 1, 5);
+  
+    // add logo
+    const flogo1 = new FFImage({ path: logo2, x: width / 2, y: 50 });
+    flogo1.setScale(0.5);
+    scene1.addChild(flogo1);
+  
+    scene1.setDuration(10);
+    scene1.setTransition('cube', 2);
+    creator.addChild(scene1);
+  
+    // add scene2 background
+    const fbg2 = new FFImage({ path: bg2, x: width / 2, y: height / 2 });
+    scene2.addChild(fbg2);
+  
+    // add logo
+    const flogo2 = new FFImage({ path: logo2, x: width / 2, y: height / 2 - 80 });
+    flogo2.setScale(0.9);
+    flogo2.addEffect('fadeInDown', 1, 1.2);
+    scene2.addChild(flogo2);
+  
+    const text5 = new FFText({
+      text: `HELLO FFCREATOR`,
+      color: '#ffffff',
+      x: width / 2,
+      y: 360,
+    });
+    text5.addEffect('backInDown', 1, 2);
+    text5.setStyle({
+      fontFamily: ['Microsoft YaHei', 'Helvetica', 'Tahoma'],
+      fontSize: 32,
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      color: '#00ac08',
+      stroke: '#000000',
+      strokeThickness: 10,
+    });
+    text5.alignCenter();
+    scene2.addChild(text5);
+  
+    scene2.setDuration(5);
+    creator.addChild(scene2);
 
-    ffscene.setBgColor('#000000');
-    ffscene.setDuration(5);
-    ffscene.setTransition('Radial', 1);
-    ffscene.addChild(
-      await imageOnCenter({
-        width,
-        height,
-        imagePath: paddyThree,
-      }),
-    );
-    ffcreator.addChild(ffscene);
-  }
-  {
-    // Scene 5, the fourth picture
-    const ffscene = new FFScene();
-    ffscene.setBgColor('#000000');
-    ffscene.setDuration(2);
-    ffscene.addChild(
-      await imageOnCenter({
-        width,
-        height,
-        imagePath: paddyFour,
-      }),
-    );
-    ffcreator.addChild(ffscene);
-  }
-  return ffcreator;
+    return creator;
 }
 
 // The picture is placed in the middle of the scene, centered up and down, centered left and right

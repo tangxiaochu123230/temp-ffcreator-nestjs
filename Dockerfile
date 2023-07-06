@@ -36,6 +36,7 @@ FROM first_docker
 COPY --from=second_docker /all_code /ffcreator
 WORKDIR /ffcreator
 RUN xvfb-run npm test
+RUN npm run production:install
 
 VOLUME "/ffcreator/output"
 

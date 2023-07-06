@@ -37,6 +37,8 @@ COPY --from=second_docker /all_code/ffcreator /ffcreator
 WORKDIR /ffcreator
 RUN xvfb-run npm test
 
+VOLUME "/ffcreator/output"
+
 EXPOSE 3000
 
 # start server

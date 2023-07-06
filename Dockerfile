@@ -30,6 +30,7 @@ WORKDIR /all_code
 RUN rm -rf ./node_modules
 RUN git add .
 RUN git reset --hard
+RUN rm -rf ./.git
 
 # copy ffcreator folder
 FROM first_docker
@@ -37,8 +38,9 @@ COPY --from=second_docker /all_code /ffcreator
 WORKDIR /ffcreator
 RUN xvfb-run npm test
 RUN npm run production:install
+RUN rm -rf ./output
 
-VOLUME "/ffcreator/output"
+VOLUME /ffcreator/output
 
 EXPOSE 3000
 

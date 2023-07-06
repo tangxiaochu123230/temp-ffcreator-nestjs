@@ -22,16 +22,14 @@ export async function generateVideo(config: {
     const elephant = path.join(__dirname, 'image', 'elephant.png');
     const money = path.join(__dirname, 'image', 'm.gif');
     const audio = path.join(__dirname, 'image', '02.wav');
-    const outputDir =  config.outputVideoFilePath;
-    const cacheDir =  config.cacheDir;
   
     // create creator instance
     const width = 800;
     const height = 600;
     const creator = new FFCreator({
       cover,
-      cacheDir,
-      output: outputDir,
+      cacheDir: config.cacheDir,
+      output: config.outputVideoFilePath,
       width,
       height,
       parallel: 8,

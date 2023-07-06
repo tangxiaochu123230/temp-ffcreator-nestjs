@@ -1,6 +1,6 @@
 import { timer } from 'rxjs';
 import fs from 'fs';
-import { generateVideo } from './generate_video';
+import { generateVideo } from '@/ffcreator/generate_video';
 
 async function main() {
   const cacheDir = process.env.FFCREATOR_CACHE_DIRECTORY;

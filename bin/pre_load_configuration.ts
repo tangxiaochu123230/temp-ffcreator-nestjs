@@ -5,7 +5,6 @@ import path from 'path'
 async function main() {
   await deletePackageLockFile();
   await deleteDistFolder();
-  await deleteOutputFolder();
   await installDependencies();
   await eslint();
   process.exit();
@@ -36,11 +35,6 @@ async function deletePackageLockFile() {
 
 async function deleteDistFolder() {
   const folderPath = path.join(__dirname, "..", "dist");
-  await fs.promises.rm(folderPath, { recursive: true, force: true });
-}
-
-async function deleteOutputFolder() {
-  const folderPath = path.join(__dirname, "..", "output");
   await fs.promises.rm(folderPath, { recursive: true, force: true });
 }
 

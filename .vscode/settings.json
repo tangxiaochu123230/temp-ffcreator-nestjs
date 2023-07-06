@@ -22,6 +22,8 @@
     "test/jest-e2e.json": true,
     "output": true,
     ".github": true,
+    ".dockerignore": true,
+    "Dockerfile": true,
   },
   "editor.insertSpaces": true,
   "editor.tabSize": 2,

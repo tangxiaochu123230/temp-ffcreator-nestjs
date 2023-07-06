@@ -26,14 +26,14 @@ RUN dnf install -y mesa-dri-drivers Xvfb libXi-devel libXinerama-devel libX11-de
 FROM first_docker as second_docker
 RUN dnf install -y git
 COPY . /all_code
-WORKDIR /ffcreator
+WORKDIR /all_code
 RUN rm -rf ./node_modules
 RUN git add .
 RUN git reset --hard
 
 # copy ffcreator folder
 FROM first_docker
-COPY --from=second_docker /ffcreator /ffcreator
+COPY --from=second_docker /all_code /ffcreator
 WORKDIR /ffcreator
 RUN xvfb-run npm test
 

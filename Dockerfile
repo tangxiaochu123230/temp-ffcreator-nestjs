@@ -28,7 +28,7 @@ RUN dnf install -y git
 COPY . /all_code
 WORKDIR /ffcreator
 RUN rm -rf ./node_modules
-RUN git add ..
+RUN git add .
 RUN git reset --hard
 
 # copy ffcreator folder
